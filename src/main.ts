@@ -10,6 +10,7 @@ async function bootstrap() {
     .setDescription(
       'API for an application to take notes on subjects studied in summary format',
     )
+    .addBearerAuth()
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

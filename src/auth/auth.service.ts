@@ -1,25 +1,39 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcryptjs';
+import { LoginUserDTO } from './dto/login-user.dto';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    private prisma: PrismaService,
     private jwtService: JwtService,
   ) {}
+  async login(loginUserDTO: LoginUserDTO) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: loginUserDTO.email.toLowerCase(),
+      },
+    });
 
-  async signIn(
-    username: string,
-    pass: string,
-  ): Promise<{ access_token: string }> {
-    const user = await this.usersService.findOne(username);
-    if (user?.password !== pass) {
-      throw new UnauthorizedException();
+    if (!user) {
+      throw new BadRequestException({
+        message: 'Email/Password invalid',
+      });
     }
-    const payload = { sub: user.userId, username: user.username };
+
+    if (!(await bcrypt.compare(loginUserDTO.password, user.password))) {
+      throw new BadRequestException({
+        message: 'Email/Password invalid',
+      });
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = user;
+
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      ...rest,
+      accessToken: this.jwtService.sign({ id: user.id }),
     };
   }
 }
