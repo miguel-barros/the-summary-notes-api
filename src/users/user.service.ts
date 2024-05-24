@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { PrismaErrorHandler, PrismaService } from '../prisma.service';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { IUser } from './dto/return-user.dto';
+import { UserInterface } from 'src/types/user';
 
 @Injectable()
 export class UserService {
@@ -12,8 +11,8 @@ export class UserService {
     private jwtService: JwtService,
   ) {}
 
-  async create(data: Prisma.UserCreateInput): Promise<
-    IUser & {
+  async create(data: UserInterface): Promise<
+    UserInterface & {
       accessToken: string;
     }
   > {
@@ -32,7 +31,7 @@ export class UserService {
       const { password, ...result } = user;
 
       return {
-        ...(result as IUser & { accessToken: string }),
+        ...(result as UserInterface & { accessToken: string }),
       };
     } catch (error) {
       PrismaErrorHandler(error);
@@ -61,33 +60,5 @@ export class UserService {
     }
 
     return user;
-  }
-
-  async findMany(query: string): Promise<IUser[]> {
-    const users = await this.prisma.user.findMany({
-      where: {
-        OR: [
-          {
-            name: {
-              contains: query,
-              mode: 'insensitive',
-            },
-          },
-          {
-            email: {
-              contains: query,
-              mode: 'insensitive',
-            },
-          },
-        ],
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-      },
-    });
-
-    return users as IUser[];
   }
 }

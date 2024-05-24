@@ -12,6 +12,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "vercel-build": "npx prisma generate && npm run db:setup",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -21,10 +22,11 @@
     "db:drop": "prisma migrate reset --force",
     "db:migrate": "prisma migrate dev --name _",
     "db:seed": "ts-node prisma/seeds/index.ts",
-    "db:setup": "npm run db:drop && npm run db:migrate && npm run db:seed"
+    "db:setup": "npm run db:drop && npm run db:migrate"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/platform-express": "^10.0.0",
@@ -34,7 +36,8 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "serverless-http": "^3.2.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

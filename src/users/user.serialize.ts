@@ -1,7 +1,7 @@
-import { User } from '@prisma/client';
 import { Record } from '@prisma/client/runtime/library';
+import { UserInterface } from 'src/types/user';
 
-type userWithoutPassword = Omit<User, 'password'>;
+type userWithoutPassword = Omit<UserInterface, 'password'>;
 type userWithoutPasswordAndRefreshToken = Omit<
   userWithoutPassword,
   'refreshToken'
@@ -10,7 +10,6 @@ type userWithoutPasswordAndRefreshToken = Omit<
 const userSerialize: Record<keyof userWithoutPasswordAndRefreshToken, boolean> =
   {
     id: true,
-    name: true,
     email: true,
     createdAt: true,
     updatedAt: true,
