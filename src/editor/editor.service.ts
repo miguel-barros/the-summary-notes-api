@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
+import { UpdateEditorDto } from './dto/update-editor.dto';
 
 @Injectable()
 export class EditorService {
@@ -34,5 +35,31 @@ export class EditorService {
     });
 
     return editors;
+  }
+
+  async update(
+    userId: string,
+    editorId: string,
+    updateEditorDTO: UpdateEditorDto,
+  ) {
+    const editor = await this.prisma.editor.findUnique({
+      where: {
+        id: editorId,
+        userId,
+      },
+    });
+
+    if (!editor) {
+      throw new NotFoundException({
+        message: 'Editor not found',
+      });
+    }
+
+    return await this.prisma.editor.update({
+      where: {
+        id: editorId,
+      },
+      data: updateEditorDTO,
+    });
   }
 }
