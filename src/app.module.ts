@@ -3,6 +3,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './users/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
+import { EditorModule } from './editor/editor.module';
 
 const env = process.env.NODE_ENV;
 
@@ -14,6 +15,7 @@ const env = process.env.NODE_ENV;
     }),
     AuthModule,
     UserModule,
+    EditorModule,
   ],
   controllers: [AppController],
 })
