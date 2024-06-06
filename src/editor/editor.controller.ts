@@ -39,6 +39,22 @@ export class EditorController {
     return await this.editorService.findAll(req.user.id);
   }
 
+  @Get(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'The record has been successfully retrieved.',
+    type: CreateEditorDto,
+  })
+  @ApiNotFoundResponse({
+    description: 'Editor not found',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+  })
+  async findOne(@Param('id') editorId: string, @Req() req: Express.Request) {
+    return await this.editorService.findOne(req.user.id, editorId);
+  }
+
   @ApiResponse({
     status: 200,
     description: 'The record has been successfully updated.',

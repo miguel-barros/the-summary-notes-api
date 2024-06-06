@@ -37,6 +37,23 @@ export class EditorService {
     return editors;
   }
 
+  async findOne(userId: string, editorId: string) {
+    const editor = await this.prisma.editor.findUnique({
+      where: {
+        id: editorId,
+        userId,
+      },
+    });
+
+    if (!editor) {
+      throw new NotFoundException({
+        message: 'Editor not found',
+      });
+    }
+
+    return editor;
+  }
+
   async update(
     userId: string,
     editorId: string,
