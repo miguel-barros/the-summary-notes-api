@@ -17,6 +17,7 @@ export class EditorService {
       const editor = await this.prisma.editor.create({
         data: {
           content: '',
+          title: 'Untitled summary',
           user: {
             connect: {
               id: userId,

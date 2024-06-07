@@ -8,4 +8,10 @@ export class CreateEditorDto {
   })
   @IsNotEmpty()
   content: string;
+
+  @ApiProperty({
+    description: 'The title of the editor',
+    example: 'Title of the editor',
+  })
+  title: string;
 }
